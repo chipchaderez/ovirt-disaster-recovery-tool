@@ -129,38 +129,6 @@ class importStorageForm(npyscreen.ActionForm):
         action = form.edit()
         return action
 	
-    def onImportEntitesPopup(self):
-        def on_ok():
-            for x in range(0, 12):
-	        form.templatesSlider.value += 1
-                time.sleep(0.1)
-                form.display()
-            for x in range(0, 12):
-                form.vmsSlider.value += 1
-                time.sleep(0.1)
-                form.display()
-            for x in range(0, 12):
-                form.disksSlider.value += 1
-                time.sleep(0.1)
-                form.display()
-            
-        def on_cancel():
-            self.parentApp.setNextForm(None)
-
-        form = npyscreen.ActionPopup(name='Import Entities', lines=20, columns=80)
-        form.show_aty = 2
-        form.on_ok = on_ok
-        form.on_cancel = on_cancel
-
-        form.error = form.add(npyscreen.FixedText, value='Select entities to import:', color='LABEL', editable=False)
-        form.entites = form.add(npyscreen.MultiSelect, values=['Templates', 'VMs', 'Disks'], max_height=4, scroll_exit=True)
-        form.templatesSlider = form.add(npyscreen.TitleSlider, out_of=12, name = "Templates", editable=False, rely=7)
-        form.vmsSlider = form.add(npyscreen.TitleSlider, out_of=12, name = "VMs", editable=False, rely=9)
-        form.disksSlider = form.add(npyscreen.TitleSlider, out_of=12, name = "Disks", editable=False, rely=11)
-
-        action = form.edit()
-        return action
-
 class importEntitiesForm(npyscreen.ActionForm):
     def create(self):
         self.importTitle = self.add(npyscreen.FixedText, value='Import Entites:', editable=False)
