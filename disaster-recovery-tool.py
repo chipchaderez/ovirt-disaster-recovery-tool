@@ -138,9 +138,12 @@ class importEntitiesForm(npyscreen.ActionForm):
         self.label = self.add(npyscreen.FixedText, value='Select entities to import:', editable=False, rely=11)
         self.entities = self.add(self.EntitiesMultiSelect, values=['Templates', 'VMs', 'Disks'],
                                  max_height=4, scroll_exit=True, hidden=True)
-        self.templatesSlider = self.add(npyscreen.TitleSlider, out_of=12, name = "Templates", editable=False, hidden=True)
-        self.vmsSlider = self.add(npyscreen.TitleSlider, out_of=12, name = "VMs", editable=False, hidden=True)
-        self.disksSlider = self.add(npyscreen.TitleSlider, out_of=12, name = "Disks", editable=False, hidden=True)
+        self.templatesSlider = self.add(npyscreen.TitleSlider, name = "Templates", out_of=100, editable=False, label=True, hidden=True, rely=15)
+        self.template_import = self.add(npyscreen.FixedText, value='', editable=False, rely=16, hidden=True)
+        self.vmsSlider = self.add(npyscreen.TitleSlider, name = "VMs", out_of=100, editable=False, hidden=True, rely=17)
+        self.vm_import = self.add(npyscreen.FixedText, value='', editable=False, rely=18, hidden=True)
+        self.disksSlider = self.add(npyscreen.TitleSlider, name = "Disks", out_of=100, editable=False, hidden=True, rely=19)
+        self.disk_import = self.add(npyscreen.FixedText, value='', editable=False, rely=20, hidden=True)
 
     def beforeEditing(self):
         self.datacenters.values = self.getDCs()
@@ -152,7 +155,65 @@ class importEntitiesForm(npyscreen.ActionForm):
         pass
 
     def on_ok(self):
+        api = self.parentApp.api
+        cluster_ = api.clusters.get(self.clusters.get_selected_objects()[0])
+        dc_name_ = self.datacenters.get_selected_objects()[0]
+        unreg_templates = set()
+        unreg_vms = set()
+        unreg_disks = list()
+        for storageDomain in api.storagedomains.list('datacenter=%s status=active' % dc_name_):
+            if (self.templatesSlider.hidden == False):
+                self.template_import.value="Fetching unregistered templates from storage domain %s..." % storageDomain.name
+                self.display()
+                for template_per_domain in storageDomain.templates.list(unregistered=True):
+                    unreg_templates.add(template_per_domain)
+                self.template_import.value="Finished fetcihng unregistered templates from storage domain %s." % storageDomain.name
+                self.display()
+            if (self.vmsSlider.hidden == False):
+                self.vm_import.value="Fetching unregistered VMs from storage domain %s..." % storageDomain.name
+                self.display()
+                for vm_per_domain in storageDomain.vms.list(unregistered=True):
+                    unreg_vms.add(vm_per_domain)
+                self.vm_import.value="Finished fetcihng unregistered VMs from storage domain %s." % storageDomain.name
+                self.display()
+            if (self.disksSlider.hidden == False):
+                self.disk_import.value="Fetching unregistered disks from storage domain %s..." % storageDomain.name
+                self.display()
+                for disk in storageDomain.disks.list(unregistered=True):
+                    unreg_disks.append(disk)
+                self.vm_import.value="Finished fetcihng unregistered disks from storage domain %s." % storageDomain.name
+                self.display()
+
+        self.disk_import.value=""
+        self.vm_import.value=""
+        self.template_import.value=""
+        self.display()
+        unreg_template_index=1
+        for unreg_template in unreg_templates:
+            self.template_import.value="Register template name: " + unreg_template.name
+            self.templatesSlider.value=unreg_template_index*(100/len(unreg_templates))
+            unreg_template_index+=1
+            self.display()
+            unreg_template.register(params.Action(cluster=cluster_))
+        self.template_import.value="Finished registering all the templates"
+        self.display()
+        unreg_vm_index=1
+        for unreg_vm in unreg_vms:
+            self.vm_import.value="Register VM name: " + unreg_vm.name
+            self.templatesSlider.value=unreg_vm_index*(100/len(unreg_vms))
+            unreg_vm_index+=1
+            self.display()
+            unreg_vm.register(params.Action(cluster=cluster_))
+        self.template_import.value="All the VMs were registered"
+        unreg_disk_index=1
+        for unreg_disk in unreg_disks:
+            self.disk_import.value="Register disk name: " + unreg_disk.name
+            self.disksSlider.value=unreg_disk_index*(100/len(unreg_disks))
+            unreg_disk_index+=1
+            self.display()
+            unreg_disk.register()
         pass
+
 
     class DCsTitleSelectOne(npyscreen.TitleSelectOne):
         def when_value_edited(self):
@@ -175,16 +236,21 @@ class importEntitiesForm(npyscreen.ActionForm):
             self.parent.templatesSlider.hidden = True
             self.parent.vmsSlider.hidden = True
             self.parent.disksSlider.hidden = True
+            self.parent.template_import.hidden = True
+            self.parent.vm_import.hidden = True
+            self.parent.disk_import.hidden = True
 
             selectedObjects = self.parent.entities.get_selected_objects();
             if selectedObjects:
               if ('Templates' in selectedObjects):
-                  self.parent.templatesSlider.hidden = False              
+                  self.parent.templatesSlider.hidden = False
+                  self.parent.template_import.hidden = False
               if ('VMs' in selectedObjects):
-                  self.parent.vmsSlider.hidden = False        
+                  self.parent.vmsSlider.hidden = False
+                  self.parent.vm_import.hidden = False
               if ('Disks' in selectedObjects):
                   self.parent.disksSlider.hidden = False
-
+                  self.parent.disk_import.hidden = False
             self.parent.templatesSlider.update()
             self.parent.vmsSlider.update()
             self.parent.disksSlider.update()
