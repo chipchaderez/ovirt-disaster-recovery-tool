@@ -89,7 +89,7 @@ class importStorageForm(npyscreen.ActionForm):
         param = params.StorageDomain(name=self.storageName.value,
                      type_='data',
                      host=api.hosts.get(name=self.hosts.get_selected_objects()[0]),
-                     storage = params.Storage(type_=self.storageTypes.get_selected_objects()[0], 
+                     storage = params.StorageConnection(type_=self.storageTypes.get_selected_objects()[0],
                                    address=self.url.value.split(':')[0],
                                    path=self.url.value.split(':')[1]))
         try:            
@@ -110,7 +110,7 @@ class importStorageForm(npyscreen.ActionForm):
             pass
 
         def on_cancel():
-            pass
+            self.parentApp.setNextForm('import_entities')
 
         form = npyscreen.ActionPopup(name=title, lines=9, columns=80)
         form.show_aty = 7
@@ -138,12 +138,12 @@ class importEntitiesForm(npyscreen.ActionForm):
         self.label = self.add(npyscreen.FixedText, value='Select entities to import:', editable=False, rely=11)
         self.entities = self.add(self.EntitiesMultiSelect, values=['Templates', 'VMs', 'Disks'],
                                  max_height=4, scroll_exit=True, hidden=True)
-        self.templatesSlider = self.add(npyscreen.TitleSlider, name = "Templates", out_of=100, editable=False, label=True, hidden=True, rely=15)
-        self.template_import = self.add(npyscreen.FixedText, value='', editable=False, rely=16, hidden=True)
-        self.vmsSlider = self.add(npyscreen.TitleSlider, name = "VMs", out_of=100, editable=False, hidden=True, rely=17)
-        self.vm_import = self.add(npyscreen.FixedText, value='', editable=False, rely=18, hidden=True)
-        self.disksSlider = self.add(npyscreen.TitleSlider, name = "Disks", out_of=100, editable=False, hidden=True, rely=19)
-        self.disk_import = self.add(npyscreen.FixedText, value='', editable=False, rely=20, hidden=True)
+        self.templatesSlider = self.add(npyscreen.TitleSlider, name = "Templates", out_of=100, editable=False, label=True, hidden=True, rely=18)
+        self.template_import = self.add(npyscreen.FixedText, value='', editable=False, rely=19, hidden=True)
+        self.vmsSlider = self.add(npyscreen.TitleSlider, name = "VMs", out_of=100, editable=False, hidden=True, rely=21)
+        self.vm_import = self.add(npyscreen.FixedText, value='', editable=False, rely=22, hidden=True)
+        self.disksSlider = self.add(npyscreen.TitleSlider, name = "Disks", out_of=100, editable=False, hidden=True, rely=24)
+        self.disk_import = self.add(npyscreen.FixedText, value='', editable=False, rely=25, hidden=True)
 
     def beforeEditing(self):
         self.datacenters.values = self.getDCs()
@@ -152,7 +152,7 @@ class importEntitiesForm(npyscreen.ActionForm):
         return list(map((lambda dc: dc.name), self.parentApp.api.datacenters.list('status=up')))
 
     def on_cancel(self):
-        pass
+        self.parentApp.setNextForm(None)
 
     def on_ok(self):
         api = self.parentApp.api
@@ -188,23 +188,50 @@ class importEntitiesForm(npyscreen.ActionForm):
         self.vm_import.value=""
         self.template_import.value=""
         self.display()
-        unreg_template_index=1
-        for unreg_template in unreg_templates:
-            self.template_import.value="Register template name: " + unreg_template.name
-            self.templatesSlider.value=unreg_template_index*(100/len(unreg_templates))
-            unreg_template_index+=1
+        if len(unreg_templates) == 0:
+            self.template_import.value="No Templates to Register"
+            self.template_import.color='VERYGOOD'
             self.display()
-            unreg_template.register(params.Action(cluster=cluster_))
-        self.template_import.value="Finished registering all the templates"
-        self.display()
-        unreg_vm_index=1
-        for unreg_vm in unreg_vms:
-            self.vm_import.value="Register VM name: " + unreg_vm.name
-            self.templatesSlider.value=unreg_vm_index*(100/len(unreg_vms))
-            unreg_vm_index+=1
+        else:
+            unreg_template_index=1
+            for unreg_template in unreg_templates:
+                self.template_import.value="Register template name: " + unreg_template.name
+                self.templatesSlider.value=unreg_template_index*(100/len(unreg_templates))
+                self.template_import.color='VERYGOOD'
+                unreg_template_index+=1
+                self.display()
+                try:
+                    unreg_template.register(params.Action(cluster=cluster_))
+                except Exception as e:
+                    self.template_import.value="%s failed to register. Exception is: %s" % (unreg_template.name, e.detail)
+                    self.template_import.color='CRITICAL'
+                    self.display()
+                    time.sleep(5)
+            self.template_import.value="Finished templates registration"
+            self.template_import.color='VERYGOOD'
             self.display()
-            unreg_vm.register(params.Action(cluster=cluster_))
-        self.template_import.value="All the VMs were registered"
+
+        if len(unreg_vms) == 0:
+            self.vm_import.value="No VMs to Register"
+            self.vm_import.color='VERYGOOD'
+            self.display()
+        else:
+            unreg_vm_index=1
+            for unreg_vm in unreg_vms:
+                self.vm_import.value="Register VM name: " + unreg_vm.name
+                self.vm_import.color='VERYGOOD'
+                self.vmsSlider.value=unreg_vm_index*(100/len(unreg_vms))
+                unreg_vm_index+=1
+                self.display()
+                try:
+                    unreg_vm.register(params.Action(cluster=cluster_))
+                except Exception as e:
+                    self.vm_import.value="%s failed to register. Exception: %s" % (unreg_vm.name, e.detail)
+                    self.vm_import.color='CRITICAL'
+                    self.display()
+                    time.sleep(5)
+            self.vm_import.value="Finished VMs registration"
+            self.vm_import.color='VERYGOOD'
         unreg_disk_index=1
         for unreg_disk in unreg_disks:
             self.disk_import.value="Register disk name: " + unreg_disk.name
@@ -212,7 +239,6 @@ class importEntitiesForm(npyscreen.ActionForm):
             unreg_disk_index+=1
             self.display()
             unreg_disk.register()
-        pass
 
 
     class DCsTitleSelectOne(npyscreen.TitleSelectOne):
