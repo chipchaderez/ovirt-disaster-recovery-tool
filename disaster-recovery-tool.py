@@ -80,7 +80,7 @@ class importStorageForm(npyscreen.ActionForm):
                    self.parent.url.update()
 
     def on_cancel(self):
-        self.parentApp.setNextForm('import_entities')        
+        self.parentApp.setNextForm('import_entities')
 
     def on_ok(self):
         self.warn.hidden=False
@@ -145,6 +145,40 @@ class importEntitiesForm(npyscreen.ActionForm):
         self.disksSlider = self.add(npyscreen.TitleSlider, name = "Disks", out_of=100, editable=False, hidden=True, rely=24)
         self.disk_import = self.add(npyscreen.FixedText, value='', editable=False, rely=25, hidden=True)
 
+
+    def reset(self):
+        self.templatesSlider.hidden = True
+        self.vmsSlider.hidden = True
+        self.disksSlider.hidden = True
+        self.template_import.hidden = True
+        self.vm_import.hidden = True
+        self.disk_import.hidden = True
+        self.disk_import.value = ""
+        self.vm_import.value = ""
+        self.template_import.value = ""
+        self.beforeEditing()
+        self.clusters.hidden = True
+
+    def onRegisterPopup(self):
+        def on_ok():
+            self.reset()
+            self.display()
+
+        def on_cancel():
+            self.parentApp.setNextForm(None)
+
+        form = npyscreen.ActionPopup(name="All the entities for the Data Center has been registered", lines=9, columns=80)
+        form.show_aty = 7
+        form.show_atx = 45
+        form.OK_BUTTON_TEXT = 'Yes'
+        form.CANCEL_BUTTON_TEXT = 'No'
+        form.on_ok = on_ok
+        form.on_cancel = on_cancel
+        label = form.add_widget(npyscreen.FixedText, value='Do you want to register entities from another Data Center?',
+                                color='CONTROL', editable=0, rely=3)
+        action = form.edit()
+        return action
+
     def beforeEditing(self):
         self.datacenters.values = self.getDCs()
 
@@ -154,92 +188,89 @@ class importEntitiesForm(npyscreen.ActionForm):
     def on_cancel(self):
         self.parentApp.setNextForm(None)
 
-    def on_ok(self):
-        api = self.parentApp.api
-        cluster_ = api.clusters.get(self.clusters.get_selected_objects()[0])
-        dc_name_ = self.datacenters.get_selected_objects()[0]
-        unreg_templates = set()
-        unreg_vms = set()
-        unreg_disks = list()
-        for storageDomain in api.storagedomains.list('datacenter=%s status=active' % dc_name_):
-            if (self.templatesSlider.hidden == False):
-                self.template_import.value="Fetching unregistered templates from storage domain %s..." % storageDomain.name
-                self.display()
-                for template_per_domain in storageDomain.templates.list(unregistered=True):
-                    unreg_templates.add(template_per_domain)
-                self.template_import.value="Finished fetcihng unregistered templates from storage domain %s." % storageDomain.name
-                self.display()
-            if (self.vmsSlider.hidden == False):
-                self.vm_import.value="Fetching unregistered VMs from storage domain %s..." % storageDomain.name
-                self.display()
-                for vm_per_domain in storageDomain.vms.list(unregistered=True):
-                    unreg_vms.add(vm_per_domain)
-                self.vm_import.value="Finished fetcihng unregistered VMs from storage domain %s." % storageDomain.name
-                self.display()
-            if (self.disksSlider.hidden == False):
-                self.disk_import.value="Fetching unregistered disks from storage domain %s..." % storageDomain.name
-                self.display()
-                for disk in storageDomain.disks.list(unregistered=True):
-                    unreg_disks.append(disk)
-                self.vm_import.value="Finished fetcihng unregistered disks from storage domain %s." % storageDomain.name
-                self.display()
+    def _aggragte_entities(self, slider, slider_text, entity, storage_domain, unreg_entities):
+        if (slider.hidden == False):
+            slider_text.value="Fetching unregistered %s from Storage Domain %s..." % (entity, storage_domain.name)
+            slider_text.update()
+            for entity_per_domain in getattr(storage_domain, entity).list(unregistered=True):
+                unreg_entities.add(entity_per_domain)
+            slider_text.value="Finished fetching unregistered %s from storage domain %s." % (entity, storage_domain.name)
+            slider_text.update()
 
+    def _reset_slider_texts(self):
         self.disk_import.value=""
         self.vm_import.value=""
         self.template_import.value=""
         self.display()
-        if len(unreg_templates) == 0:
-            self.template_import.value="No Templates to Register"
-            self.template_import.color='VERYGOOD'
-            self.display()
-        else:
-            unreg_template_index=1
-            for unreg_template in unreg_templates:
-                self.template_import.value="Register template name: " + unreg_template.name
-                self.templatesSlider.value=unreg_template_index*(100/len(unreg_templates))
-                self.template_import.color='VERYGOOD'
-                unreg_template_index+=1
-                self.display()
-                try:
-                    unreg_template.register(params.Action(cluster=cluster_))
-                except Exception as e:
-                    self.template_import.value="%s failed to register. Exception is: %s" % (unreg_template.name, e.detail)
-                    self.template_import.color='CRITICAL'
-                    self.display()
-                    time.sleep(5)
-            self.template_import.value="Finished templates registration"
-            self.template_import.color='VERYGOOD'
-            self.display()
 
-        if len(unreg_vms) == 0:
-            self.vm_import.value="No VMs to Register"
-            self.vm_import.color='VERYGOOD'
-            self.display()
-        else:
-            unreg_vm_index=1
-            for unreg_vm in unreg_vms:
-                self.vm_import.value="Register VM name: " + unreg_vm.name
-                self.vm_import.color='VERYGOOD'
-                self.vmsSlider.value=unreg_vm_index*(100/len(unreg_vms))
-                unreg_vm_index+=1
-                self.display()
-                try:
-                    unreg_vm.register(params.Action(cluster=cluster_))
-                except Exception as e:
-                    self.vm_import.value="%s failed to register. Exception: %s" % (unreg_vm.name, e.detail)
-                    self.vm_import.color='CRITICAL'
-                    self.display()
-                    time.sleep(5)
-            self.vm_import.value="Finished VMs registration"
-            self.vm_import.color='VERYGOOD'
-        unreg_disk_index=1
-        for unreg_disk in unreg_disks:
-            self.disk_import.value="Register disk name: " + unreg_disk.name
-            self.disksSlider.value=unreg_disk_index*(100/len(unreg_disks))
-            unreg_disk_index+=1
-            self.display()
-            unreg_disk.register()
+    def _update_slider_text(self, slider, slider_text, entity_type, entity, size, ind, prefix):
+        slider_text.value="%sRegister %s name: %s" % (prefix, entity_type, entity.name)
+        slider_text.color='VERYGOOD'
+        slider.value=ind*(100/size)
+        self.display()
 
+    def _handle_exception(self, slider_text, entity, e):
+        slider_text.value="%s failed to register. Exception is: %s" % (entity.name, e.detail)
+        slider_text.color='CRITICAL'
+        self.display()
+        time.sleep(5)
+
+    def _finish_registration(self, slider, slider_text, entity_type):
+        slider_text.value="Finished %ss registration" % entity_type
+        slider_text.color='VERYGOOD'
+        slider.value=100
+        self.display()
+
+    def _register_entities(self, _cluster, entities, slider, slider_text, entity_type):
+        if not entities:
+            slider_text.value="No %ss to register" % entity_type
+            slider_text.color='VERYGOOD'
+            slider_text.update()
+        else:
+            ind=1
+            for entity in entities:
+                self._update_slider_text(slider, slider_text, entity_type, entity, len(entities), ind, "")
+                ind+=1
+                try:
+                    entity.register(params.Action(cluster=_cluster))
+                except Exception as e:
+                    self.handle_exception(slider_text, entity, e)
+            self._finish_registration(slider, slider_text, entity_type)
+
+    def _register_disks(self, active_sds):
+        if (self.disksSlider.hidden == False):
+            for storageDomain in active_sds:
+                unreg_disks=storageDomain.disks.list(unregistered=True)
+                self.disksSlider.value=0
+                self.disk_import.value="Storage register disks from storage %s" % storageDomain.name
+                self.disksSlider.update()
+                self.disk_import.update()
+                ind=1
+                for disk_per_domain in unreg_disks:
+                    self._update_slider_text(self.disksSlider, self.disk_import, "disk", disk_per_domain, len(unreg_disks), ind, "Storage: " + storageDomain.name)
+                    ind+=1
+                    try:
+                        storageDomain.disks.add(disk=params.Disk(id=disk_per_domain.id), unregistered=True)
+                    except Exception as e:
+                        self.handle_exception(self.disk_import, disk_per_domain, e)
+            self._finish_registration(self.disksSlider, self.disk_import, "disk")
+
+    def on_ok(self):
+        api = self.parentApp.api
+        _cluster_ = api.clusters.get(self.clusters.get_selected_objects()[0])
+        active_sds = api.storagedomains.list('datacenter=%s status=active' % self.datacenters.get_selected_objects()[0])
+        unreg_templates = set()
+        unreg_vms = set()
+        for storage_domain in active_sds:
+            self._aggragte_entities(self.templatesSlider, self.template_import, 'templates', storage_domain, unreg_templates)
+            self._aggragte_entities(self.vmsSlider, self.vm_import, 'vms', storage_domain, unreg_vms)
+
+        self._reset_slider_texts()
+        _cluster = api.clusters.get(self.clusters.get_selected_objects()[0])
+        self._register_entities(_cluster, unreg_templates, self.templatesSlider, self.template_import, 'template')
+        self._register_entities(_cluster, unreg_vms, self.vmsSlider, self.vm_import, 'vm')
+        self._register_disks(active_sds)
+        self.onRegisterPopup()
 
     class DCsTitleSelectOne(npyscreen.TitleSelectOne):
         def when_value_edited(self):
@@ -277,9 +308,7 @@ class importEntitiesForm(npyscreen.ActionForm):
               if ('Disks' in selectedObjects):
                   self.parent.disksSlider.hidden = False
                   self.parent.disk_import.hidden = False
-            self.parent.templatesSlider.update()
-            self.parent.vmsSlider.update()
-            self.parent.disksSlider.update()
+            self.parent.display()
 
 class MyApplication(npyscreen.NPSAppManaged):
     TITLE = 'oVirt Disaster Recovery Tool'
