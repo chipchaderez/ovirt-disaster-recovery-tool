@@ -3,7 +3,7 @@ A text user interface tool designed for [oVirt](https://www.ovirt.org/) to manag
 
 ![rata-TUI home scrreen logo](/sources/rata-TUI_home_screen.png)
 
-# Setup
+## Setup
 If you are using a fresh install of a Linux distribution, please make sure you have the
 oVirt repository configured:
 
@@ -13,7 +13,7 @@ Then you need to install the ovirt-engine-sdk-python package:
 
 > yum install ovirt-engine-sdk-python
 
-# Usage
+## Usage
 
 After ovirt-engine-sdk-python is installed simply run disaster-recovery-tool.py from the project home folder:
   python disaster-recovery-tool.py
