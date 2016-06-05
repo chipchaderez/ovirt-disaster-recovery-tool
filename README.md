@@ -45,7 +45,7 @@ Each entity registration, will be performed under the scroll, indicating whether
 >__That is it!!__
 The new data center should now contain all the imported storage domains and VMs/Templates/Disks from your old setup which was destroyed.
 
-Here is a short video demonstrating the flow described above:
+Here is a short video demonstrating the flow which described above:
 [![DR_video](/sources/thumb_video.png)](https://www.youtube.com/embed/2QoGfYjTNf0)
 
 
