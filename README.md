@@ -4,8 +4,8 @@ A text user interface tool designed for [oVirt](https://www.ovirt.org/) to manag
 ![rata-TUI home scrreen logo](/sources/rata-TUI_home_screen.png)
 
 # Setup
-If you are using a fresh install of Linux distribution please make sure you have the
-oVirt repositories configured:
+If you are using a fresh install of a Linux distribution, please make sure you have the
+oVirt repository configured:
 
 > yum install [http://resources.ovirt.org/pub/yum-repo/ovirt-release36.rpm](http://resources.ovirt.org/pub/yum-repo/ovirt-release36.rpm)
 
