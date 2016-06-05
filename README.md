@@ -1,5 +1,5 @@
-# rata-TUI: [oVirt](https://www.ovirt.org/) Disaster Recovery Tool
-A text user interface tool designed for oVirt to manage disaster recovery scenrios in an easy and intuitive way.
+# rata-TUI: oVirt Disaster Recovery Tool
+A text user interface tool designed for [oVirt](https://www.ovirt.org/) to manage disaster recovery scenrios in an easy and intuitive way.
 
 ![rata-TUI home scrreen logo](/sources/rata-TUI_home_screen.png)
 
