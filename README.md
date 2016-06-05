@@ -7,11 +7,11 @@ A text user interface tool designed for [oVirt](https://www.ovirt.org/) to manag
 If you are using a fresh install of Linux distribution please make sure you have the
 oVirt repositories configured:
 
-  yum install http://resources.ovirt.org/pub/yum-repo/ovirt-release36.rpm
+> yum install [http://resources.ovirt.org/pub/yum-repo/ovirt-release36.rpm](http://resources.ovirt.org/pub/yum-repo/ovirt-release36.rpm)
 
 Then you need to install the ovirt-engine-sdk-python package:
 
-  yum install ovirt-engine-sdk-python
+> yum install ovirt-engine-sdk-python
 
 # Usage
 
