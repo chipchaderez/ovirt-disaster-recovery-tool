@@ -45,8 +45,9 @@ Each entity registration, will be performed under the scroll, indicating whether
 >__That is it!!__
 The new data center should now contain all the imported storage domains and VMs/Templates/Disks from your old setup which was destroyed.
 
-Here is a short video demonstrating how that is being done
-![rata-TUI video](/sources/RATATUI-oVirt-DR.mp4)
+Here is a short video demonstrating the flow described above:
+[![DR_video](/sources/rata-TUI_home_screen.png)](https://www.youtube.com/embed/2QoGfYjTNf0)
+
 
 rata-TUI is an open source project utility for oVirt Disaster Recovery.
 RATATUI is an open source project written with python and integrates with oVirt using ovirt-engine-sdk
