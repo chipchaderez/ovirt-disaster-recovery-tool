@@ -42,7 +42,8 @@ The admin will choose the type of entities to register, it could be disks, Templ
 Each entity registration, will be performed under the scroll, indicating whether the registration finished with success or failure.
 ![run python script](/sources/Register_on_progress.png)
 
->__That is it!!__
+__That is it!!__
+
 The new data center should now contain all the imported storage domains and VMs/Templates/Disks from your old setup which was destroyed.
 
 Here is a short video demonstrating the flow which described above:
