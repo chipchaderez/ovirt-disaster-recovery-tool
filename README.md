@@ -32,7 +32,7 @@ At this page, the admin should decide which storage domain to import to the new 
 The admin should pick the storage domain type, the export path, the host to perform the connect operations as part of the import process, and the name of the imported storage domain in the new Data Center.
 ![run python script](/sources/import_sd_on_progress.png)
 
-Once the storage domain will finish to be imported, a pop-up will be performed to the user, asking if there is another storage domain to import to the new Data Center.
+Once the storage domain will finish to be imported, a pop-up will be performed to the admin, asking if there is another storage domain to import to the new Data Center.
 ![run python script](/sources/import_succeeded_any_more_question.png)
 
 Once all the storage domains will finish to be import, the process of registering all the entities (VM/Templates) will start.
@@ -42,8 +42,8 @@ The admin will choose the type of entities to register, it could be disks, Templ
 Each entity registration, will be performed under the scroll, indicating whether the registration finished with success or failure.
 ![run python script](/sources/Register_on_progress.png)
 
-** That is it!! **
-Your new Data Center now contains all the imported storage domains and VMs/Templates/Disks from your old setup which was destroyed.
+  ** That is it!! **
+The new Data Center should now contain all the imported storage domains and VMs/Templates/Disks from your old setup which was destroyed.
 
 rata-TUI is an open source project utility for oVirt Disaster Recovery.
 RATATUI is an open source project written with python and integrates with oVirt using ovirt-engine-sdk
