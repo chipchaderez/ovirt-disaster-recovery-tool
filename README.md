@@ -15,10 +15,10 @@ Then you need to install the ovirt-engine-sdk-python package:
 
 ## Usage
 
-After ovirt-engine-sdk-python is installed, please run disaster-recovery-tool.py from the project home folder:
+After ovirt-engine-sdk-python is installed, run disaster-recovery-tool.py from the project home folder:
 
 > python disaster-recovery-tool.py
-
+![run python script](/sources/run_python.png)
 
 rata-TUI is an open source project utility for oVirt Disaster Recovery.
 RATATUI is an open source project written with python and integrates with oVirt using ovirt-engine-sdk
