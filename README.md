@@ -16,7 +16,7 @@ Then you need to install the ovirt-engine-sdk-python package:
 ## USAGE
 
 > *Before starting to recover the old oVirt setup, please make sure that the new oVirt engine is up and running
-> and it contains an active Data Center.*
+> and it contains an active data center.*
 
 After ovirt-engine-sdk-python is installed, run disaster-recovery-tool.py from the project home folder to start:
 ![run python script](/sources/run_python.png)
@@ -28,11 +28,11 @@ At this page you should define the address of your engine, the user name to logi
 Once logged in, the first page that will be displayed will be the import storage domain page:
 ![run python script](/sources/import_storage_domain.png)
 
-At this page, the admin should decide which storage domain to import to the new Data Center.
-The admin should pick the storage domain type, the export path, the host to perform the connect operations as part of the import process, and the name of the imported storage domain in the new Data Center.
+At this page, the admin should decide which storage domain to import to the new data center.
+The admin should pick the storage domain type, the export path, the host to perform the connect operations as part of the import process, and the name of the imported storage domain in the new data center.
 ![run python script](/sources/import_sd_on_progress.png)
 
-Once the storage domain will finish to be imported, a pop-up will be performed to the admin, asking if there is another storage domain to import to the new Data Center.
+Once the storage domain will finish to be imported, a pop-up will be performed to the admin, asking if there is another storage domain to import to the new data center.
 ![run python script](/sources/import_succeeded_any_more_question.png)
 
 Once all the storage domains will finish to be import, the process of registering all the entities (VM/Templates) will start.
@@ -43,11 +43,11 @@ Each entity registration, will be performed under the scroll, indicating whether
 ![run python script](/sources/Register_on_progress.png)
 
 __That is it!!__
-The new Data Center should now contain all the imported storage domains and VMs/Templates/Disks from your old setup which was destroyed.
+The new data center should now contain all the imported storage domains and VMs/Templates/Disks from your old setup which was destroyed.
 
 rata-TUI is an open source project utility for oVirt Disaster Recovery.
 RATATUI is an open source project written with python and integrates with oVirt using ovirt-engine-sdk
-The tool should support import of Storage Domains (currently only NFS) to a pre-initialized active Data Center and register all the entities (Templates, VMs and floating disks) using one simple operation.
+The tool should support import of storage domains (currently only NFS) to a pre-initialized active data center and register all the entities (Templates, VMs and floating disks) using one simple operation.
 
 The following is a link for a demo video:
 https://youtu.be/2QoGfYjTNf0
