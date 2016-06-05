@@ -15,9 +15,8 @@ Then you need to install the ovirt-engine-sdk-python package:
 
 ## USAGE
 
-> <I>Before we start to recover your old setup, 
-> please make sure that your new oVirt engine is up and running
-> and it contains an active Data Center.</I>
+> *Before starting to recover the old oVirt setup, please make sure that your new oVirt engine is up and running
+> and it contains an active Data Center.*
 
 After ovirt-engine-sdk-python is installed, run disaster-recovery-tool.py from the project home folder to start:
 
