@@ -64,4 +64,4 @@ The tool should support import of storage domains (currently only NFS) to a pre-
 Support import of block storage domain (iSCSI or FC)
 
 ## CONTACT
-On any question please feel free to contact Maor Lipchuk (mlipchuk@redhat.com) or Daniel Erez (derez@redhat.com)
+Please feel free to contact Maor Lipchuk (mlipchuk@redhat.com) or Daniel Erez (derez@redhat.com) on any question
