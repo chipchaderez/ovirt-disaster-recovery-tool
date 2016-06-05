@@ -1,5 +1,5 @@
 # rata-TUI: oVirt Disaster Recovery Tool
-A text user interface tool for recovering an oVirt setup to a pre-initialized Data Center in an easy and intuitive way.
+A text user interface tool designed for oVirt to manage disaster recovery scenrios in an easy and intuitive way.
 
 ![rata-TUI home scrreen logo](/sources/rata-TUI_home_screen.png)
 
