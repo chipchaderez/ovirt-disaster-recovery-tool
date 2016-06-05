@@ -3,7 +3,21 @@ A text user interface tool designed for [oVirt](https://www.ovirt.org/) to manag
 
 ![rata-TUI home scrreen logo](/sources/rata-TUI_home_screen.png)
 
-How To
+# Setup
+If you are using a fresh install of Linux distribution please make sure you have the
+oVirt repositories configured:
+
+  yum install http://resources.ovirt.org/pub/yum-repo/ovirt-release36.rpm
+
+Then you need to install the ovirt-engine-sdk-python package:
+
+  yum install ovirt-engine-sdk-python
+
+# Usage
+
+After ovirt-engine-sdk-python is installed simply run disaster-recovery-tool.py from the project home folder:
+  python disaster-recovery-tool.py
+
 
 rata-TUI is an open source project utility for oVirt Disaster Recovery.
 RATATUI is an open source project written with python and integrates with oVirt using ovirt-engine-sdk
