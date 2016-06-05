@@ -1,7 +1,7 @@
 # rata-TUI
 A text user interface tool for recovering an oVirt setup to a pre-initialized Data Center in an easy and intuitive way.
 
-![rata-TUI logo](/sources/rata-TUI_home_screen.png)
+![rata-TUI home scrreen logo](/sources/rata-TUI_home_screen.png)
 
 rata-TUI is an open source project utility for oVirt Disaster Recovery.
 RATATUI is an open source project written with python and integrates with oVirt using ovirt-engine-sdk
