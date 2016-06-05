@@ -49,7 +49,7 @@ The new data center should now contain all the imported storage domains and VMs/
 Here is a short video demonstrating the flow which described above:
 [![DR_video](/sources/thumb_video.png)](https://www.youtube.com/embed/2QoGfYjTNf0)
 
-## Troubleshooting
+## Troubleshoot
 
 * If python fails to run, please make sure ovirt-release repo and ovirt-engine-sdk-python is installed.
 * If the data center fails to import a storage domain, please make sure the setup is running and the data center is active with an active SPM host.
