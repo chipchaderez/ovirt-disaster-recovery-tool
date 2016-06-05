@@ -56,12 +56,15 @@ Here is a short video demonstrating the flow which described above:
 
 ## Additional
 
-RATATUI is an open source project written with python and integrates with oVirt using ovirt-engine-sdk
-The tool should support import of storage domains (currently only NFS) to a pre-initialized active data center and register all the entities (Templates, VMs and floating disks) using one simple operation.
+RATA-TUI is an open source project written with python and uses [npyscreen](http://npyscreen.readthedocs.io/introduction.html), a python widget library and application framework for programming terminal or console applications.
+RATA-TUI integrates with oVirt using ovirt-engine-sdk, and it should support import of storage domains (currently only NFS) to a pre-initialized active data center and register all the entities (Templates, VMs and floating disks) using one simple operation.
+
+
 
 ## Future Work
 
 Support import of block storage domain (iSCSI or FC)
 
 ## Contact
+
 Please feel free to contact Maor Lipchuk (mlipchuk@redhat.com) or Daniel Erez (derez@redhat.com) on any question
