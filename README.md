@@ -33,7 +33,7 @@ The admin should pick the storage domain type, the export path, the host to perf
 ![run python script](/sources/import_sd_on_progress.png)
 
 Once the storage domain will finish to be imported, a pop-up will be performed to the user, asking if there is another storage domain to import to the new Data Center.
-![run python script](/sources/import_succeeded_any_more?.png)
+![run python script](/sources/import_succeeded_any_more_question.png)
 
 Once all the storage domains will finish to be import, the process of registering all the entities (VM/Templates) will start.
 ![run python script](/sources/Register_all_unregistered_entities.png)
